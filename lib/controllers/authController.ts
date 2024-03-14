@@ -21,7 +21,7 @@ export class AuthController{
         return res.json({ auth: true, token });
     }
     
-     /* public async signup(req: Request, res: Response): Promise<Response> {
+      public async signup(req: Request, res: Response): Promise<Response> {
         const { username, email, password,rol } = req.body;
         console.log(username, email, password,rol);
       
@@ -31,12 +31,12 @@ export class AuthController{
           password,
           rol,
         });
-        user.password = await user.encryptPassword(user.password);
+        user.password = await user.encryptPassword(req.body.password);
         await user.save();
         return res.status(200).json("Registro completado, Bienvenido:" + user.);
     }
     
-    public async priv(req: AuthenticatedRequest, res: Response): Promise<Response> {
+    /*public async priv(req: AuthenticatedRequest, res: Response): Promise<Response> {
         try {
             const user = await User.findById(req.userId);
             if (!user) {
