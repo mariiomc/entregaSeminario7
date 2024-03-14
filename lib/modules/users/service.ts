@@ -1,7 +1,7 @@
 import { IUser } from './model';
 import users from './schema';
 import { Types } from 'mongoose';
-const bcrypt = require("bcryptjs");
+//const bcrypt = require("bcryptjs");
 
 export default class UserService {
 

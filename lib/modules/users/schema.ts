@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import { IUserModel } from './model';
-const bcrypt = require("bcryptjs");
+//const bcrypt = require("bcryptjs");
 
 const Schema = mongoose.Schema;
 
@@ -16,10 +16,12 @@ const schema = new Schema({
     posts: [{ type: Schema.Types.ObjectId, ref: 'posts', required: false }] ,// Array of ObjectIds referencing the Post model
     reviews: [{ type: Schema.Types.ObjectId, ref: 'Review', required: false }],
     password:{type: String, required: true},
+    token: {type: String, required: true},
+    rol: {type: String, required: true},
     }
     
 );
-
+/*
 schema.methods.encryptPassword = async (password:string) => {
     const salt = await bcrypt.genSalt(10);
     return bcrypt.hash(password, salt);
@@ -27,5 +29,6 @@ schema.methods.encryptPassword = async (password:string) => {
   schema.methods.validatePassword = async function (password:string) {
     return bcrypt.compare(password, this.password);
   };
+  */
 
 export default mongoose.model<IUserModel>('users', schema);

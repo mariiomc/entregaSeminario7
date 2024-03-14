@@ -2,39 +2,63 @@ import { Request, Response } from 'express';
 import e = require('express');
 var jwt = require('jsonwebtoken');
 import {IUser } from '../modules/users/model'
-import User from '../modules/users/schema';
+import User from '../modules/users/schema';        
+import UserService from '../modules/users/service';
+
+
 
 export class AuthController{
-     public async  signin(req: Request, res: Response): Promise<Response> {
+
+  private user_service: UserService = new UserService();
+
+
+     public async signin(req: Request, res: Response): Promise<Response> {
         const { email, password } = req.body;
         const user = await User.findOne({ email: email });
         if (!user) {
           return res.status(404).send("El email no existe");
         }
-        const validPassword = await user.validatePassword(password);
+
+          if (req.params.id) {
+              const user_filter = { email: req.params.email };
+              // Fetch user
+              const user_data = await this.user_service.populateUserPosts(user_filter);
+              if(user_data.password == password){
+                  const token = jwt.sign({ id: user._id}, 'aaaa', {
+                  expiresIn: 60 * 60 * 24,                  
+                });                  
+                console.log("TOKEN: " + token);
+                return res.status(200).json({ auth: true, token });
+              }
+              else{
+                return res.status(405).send("La contraseña es incorrecta.");
+              }
+          }
+        
+
+  
+        /*const validPassword = await user.validatePassword(password);
         if (!validPassword) {
           return res.status(401).json({ auth: false, token: null });
         }
-        const token = jwt.sign({ id: user._id}, 'aaaa', {
-          expiresIn: 60 * 60 * 24,
-        });
-        return res.json({ auth: true, token });
+        */
+      
     }
-    
+
+    //Ya existe un create_user, que es el signup
+    /*
       public async signup(req: Request, res: Response): Promise<Response> {
-        const { username, email, password,rol } = req.body;
-        console.log(username, email, password,rol);
+        const { name, email, phone_number, gender, password, rol } = req.body;
+        console.log(name, email, phone_number, gender, password, rol);
       
         const user = new User({
-          username,
-          email,
-          password,
-          rol,
+          name
         });
         user.password = await user.encryptPassword(req.body.password);
         await user.save();
         return res.status(200).json("Registro completado, Bienvenido:" + user.);
     }
+    */
     
     /*public async priv(req: AuthenticatedRequest, res: Response): Promise<Response> {
         try {

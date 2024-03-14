@@ -14,9 +14,14 @@ export class UserRoutes {
             this.user_controller.create_user(req, res);
         });
 
-        app.post('', (req: Request, res: Response) => {
+        app.get('/signin', (req: Request, res: Response) => {
             this.auth_controller.signin(req, res);
         });
+        /*
+        app.post('/signup', (req: Request, res: Response) => {
+            this.auth_controller.signup(req, res);
+        });
+        */
 
         app.get('/:id', (req: Request, res: Response) => {
             this.user_controller.get_user(req, res);
