@@ -11,5 +11,10 @@ export interface IUser {
     phone_number: String;
     gender: String;
     posts?: mongoose.Types.ObjectId[]; // Array to store post IDs
+    reviews:mongoose.Types.ObjectId[];
+    password: String;
     token?: String;
+    encryptPassword(password: string): Promise<string>;
+    validatePassword(password: string): Promise<boolean>;
 }
+export interface IUserModel extends IUser, Document {}

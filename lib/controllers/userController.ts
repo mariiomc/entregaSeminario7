@@ -31,6 +31,14 @@ export class UserController {
                     phone_number: req.body.phone_number,
                     gender: req.body.gender,
                     token: token,
+                    reviews: [],
+                    password: req.body.password,
+                   /*  encryptPassword: function (password: string): Promise<string> {
+                        throw new Error('Function not implemented.');
+                    },
+                    validatePassword: function (password: string): Promise<boolean> {
+                        throw new Error('Function not implemented.');
+                    } */
                 };
                 const user_data = await this.user_service.createUser(user_params);
                 

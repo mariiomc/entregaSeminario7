@@ -1,8 +1,11 @@
 import { IUser } from './model';
 import users from './schema';
 import { Types } from 'mongoose';
+const bcrypt = require("bcryptjs");
 
 export default class UserService {
+
+    
     
     public async createUser(user_params: IUser): Promise<IUser> {
         try {
@@ -77,5 +80,8 @@ export default class UserService {
             throw error;
         }
     }
+
+   
+      
 
 }

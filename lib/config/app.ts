@@ -8,6 +8,7 @@ import { UserRoutes } from "../routes/user_routes";
 import { CommonRoutes } from "../routes/common_routes";
 import { PostRoutes } from "../routes/post_routes";
 import { ReviewRoutes } from "../routes/review_routes";
+import {AuthRoutes} from "../routes/auth";
 
 
 class App {
@@ -16,6 +17,7 @@ class App {
    public mongoUrl: string = 'mongodb://localhost/' + environment.getDBName();
 
    private test_routes: TestRoutes = new TestRoutes();
+   private auth_routes: AuthRoutes = new AuthRoutes();
    private user_routes: UserRoutes = new UserRoutes();
    private post_routes: PostRoutes = new PostRoutes();
    private review_routes: ReviewRoutes = new ReviewRoutes();
@@ -27,6 +29,7 @@ class App {
       this.config();
       this.mongoSetup();
       this.test_routes.route(this.app);
+      this.auth_routes.route(this.app);
       this.user_routes.route(this.app);
       this.post_routes.route(this.app);
       this.review_routes.route(this.app);
@@ -42,6 +45,7 @@ class App {
       this.app.use(bodyParser.urlencoded({ extended: false }));
       // Enable CORS for all origins
       this.app.use(cors());
+      this.app.use(express.json());
    }
 
    private mongoSetup(): void {
