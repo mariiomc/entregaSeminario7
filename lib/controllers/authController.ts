@@ -48,15 +48,31 @@ export class AuthController{
     //Ya existe un create_user, que es el signup
     /*
       public async signup(req: Request, res: Response): Promise<Response> {
+<<<<<<< HEAD
         const { name, email, phone_number, gender, password, rol } = req.body;
         console.log(name, email, phone_number, gender, password, rol);
       
         const user = new User({
           name
+=======
+        const { name: { first_name, middle_name, last_name },email, phone_number, gender, password } = req.body;
+        console.log({ name: { first_name, middle_name, last_name },email, phone_number, gender, password });
+      
+        const user = new User({
+            name: {
+                first_name,
+                middle_name,
+                last_name
+            },
+            email,
+            phone_number,
+            gender,
+            password
+>>>>>>> 2765c2f862e972f09edf96d0da10278433f0c6de
         });
         user.password = await user.encryptPassword(req.body.password);
         await user.save();
-        return res.status(200).json("Registro completado, Bienvenido:" + user.);
+        return res.status(200).json("Registro completado, Bienvenido:" + user.name.first_name);
     }
     */
     
