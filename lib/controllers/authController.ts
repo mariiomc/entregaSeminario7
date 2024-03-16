@@ -1,8 +1,8 @@
 import { Request, Response,NextFunction } from 'express';
 import e = require('express');
 var jwt = require('jsonwebtoken');
-import {IUser } from '../modules/users/model'
-import User from '../modules/users/schema';        
+import {IUser } from '../modules/users/model';
+import User from '../modules/users/schema';
 import UserService from '../modules/users/service';
 import Post from '../modules/posts/schema';        
 import PostService from '../modules/posts/service';
@@ -15,40 +15,107 @@ export class AuthController{
 
   private user_service: UserService = new UserService();
 
-
+/*
      public async signin(req: Request, res: Response): Promise<Response> {
-        const { email, password } = req.body;
+        /*const { email, password } = req.body;
         const user = await User.findOne({ email: email });
         if (!user || !password) {
-          return res.status(404).send("El email no existe o la contra no existe.");
+          return res.status(404).send("El email o la contraseña no existe.");
         }
+        
 
-        else{
-              const user_filter = { email: req.params.email };
+        //else{
+          try{
+              const user_filter = { email: req.body.email };
               // Fetch user
               const user_data = await this.user_service.populateUserPosts(user_filter);
+              console.log("User data: " + user_data);
+
+              if(!user_data){
+                return res.status(404).send({error: "El email o la contraseña no existe."});
+              }
+              else{
+
+                const validPassword = await user_data.validatePassword(user_data.password);
+                if (!validPassword) {
+                  return res.status(401).json({ auth: false, token: null });
+                }
+                else{
+                  const token = jwt.sign({ id: user_data._id}, 'aaaa', {
+                    expiresIn: 60 * 60 * 24,             
+                  });
+                  console.log("TOKEN: " + token); 
+                  return res.status(200).json({ auth: true, token });
+                }
+              }
+            }
+            catch(error){
+              console.log(error);
+              return res.status(500).json({ error: 'Internal server error' });
+          }
+
+          */
+              /*
               if(user.password == password){
                   const token = jwt.sign({ id: user._id}, 'aaaa', {
                   expiresIn: 60 * 60 * 24,                  
-                });                  
-                console.log("TOKEN: " + token);
-                return res.status(200).json({ auth: true, token });
-              }
-              else{
-                return res.status(405).send("El email no existe o la contra no existe.");
-                
-              }
-          }
-        
-
-  
+                });
+                */                   
+           // }
+        //}
         /*const validPassword = await user.validatePassword(password);
         if (!validPassword) {
           return res.status(401).json({ auth: false, token: null });
         }
         */
+       
+      public async signin(req: Request, res: Response): Promise<Response> {
+          try {
+              
+              const user_filter = { email: req.body.email };
+              const user_data = await this.user_service.populateUserPosts(user_filter);
       
-    }
+              /*
+              if (!user_data.password || !user_data.email) {
+                  return res.status(404).json({ error: "El email: " + user_data.email + " o la contraseña: " + user_data.password + " es undefined." });
+              }
+              */
+
+              const user = new User({
+                name: {
+                    first_name: user_data.name.first_name,
+                    middle_name: user_data.name.middle_name,
+                    last_name: user_data.name.last_name
+                },
+                email: user_data.email,
+                phone_number: user_data.phone_number,
+                gender: user_data.gender,
+                password: user_data.password || req.params.password,
+                rol: user_data.rol
+            });
+
+
+              console.log("Contraseña: " + req.params.password);
+              const validPassword = await user.validatePassword(req.params.password);
+              if (!validPassword) {
+                  return res.status(401).json({error:"No valid password" });
+              }
+      
+              const token = jwt.sign({ id: user_data._id}, 'aaaa', {
+                  expiresIn: 60 * 60 * 24,
+              });
+              console.log("TOKEN: " + token); 
+              return res.status(200).json({ auth: true, token });
+            
+            
+          } catch (error) {
+              console.log(error);
+              return res.status(500).json({ error: 'Internal server error' });
+          }
+      }
+      
+      
+      
     public async delete_user(req: Request, res: Response, next: NextFunction){
       try{
         const token = req.headers.authorization.split(' ')[1]; // Obtener el token de la cabecera
@@ -85,20 +152,16 @@ export class AuthController{
             return res.status(401).json({ error: 'Unauthorized: Token missing or id missing' });
         }
         else return next()
-      
-            
-        
-  
-        
     }
     catch (error) {
       // Catch and handle any errors
       return res.status(500).json({ error: 'Internal server error' });
     }
-      
+  }
 
 
-    }
+
+
     public async update_user(req: Request, res: Response, next: NextFunction){
       try{
         const token = req.headers.authorization.split(' ')[1]; // Obtener el token de la cabecera
@@ -112,18 +175,17 @@ export class AuthController{
         if (req.params.id !== decodedToken.foo ) {
           return res.status(403).json({ error: 'Unauthorized: Only the user can update the user' });
         }
-        else return next()
-  
-        
+        else return next()      
     }
     catch (error) {
       // Catch and handle any errors
       return res.status(500).json({ error: 'Internal server error' });
     }
-      
+  }
 
 
-    }
+
+
     public async delete_post(req: Request, res: Response, next: NextFunction){
       try{
         const token = req.headers.authorization.split(' ')[1]; // Obtener el token de la cabecera
@@ -180,13 +242,10 @@ export class AuthController{
     //Ya existe un create_user, que es el signup
     /*
       public async signup(req: Request, res: Response): Promise<Response> {
-<<<<<<< HEAD
         const { name, email, phone_number, gender, password, rol } = req.body;
         console.log(name, email, phone_number, gender, password, rol);
       
-        const user = new User({
-          name
-=======
+        
         const { name: { first_name, middle_name, last_name },email, phone_number, gender, password } = req.body;
         console.log({ name: { first_name, middle_name, last_name },email, phone_number, gender, password });
       
@@ -200,7 +259,6 @@ export class AuthController{
             phone_number,
             gender,
             password
->>>>>>> 2765c2f862e972f09edf96d0da10278433f0c6de
         });
         user.password = await user.encryptPassword(req.body.password);
         await user.save();

@@ -15,7 +15,7 @@ export interface IUser {
     password: String;
     token?: String;
     rol: String;
-    //encryptPassword(password: string): Promise<string>;
-    //validatePassword(password: string): Promise<boolean>;
+    encryptPassword(password: String): Promise<String>;
+    validatePassword(password: String): Promise<boolean>;
 }
 export interface IUserModel extends IUser, Document {}

@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import { IUserModel } from './model';
-//const bcrypt = require("bcryptjs");
+const bcrypt = require("bcryptjs");
 
 const Schema = mongoose.Schema;
 
@@ -21,14 +21,17 @@ const schema = new Schema({
     }
     
 );
-/*
-schema.methods.encryptPassword = async (password:string) => {
+
+schema.methods.encryptPassword = async (password:String) => {
     const salt = await bcrypt.genSalt(10);
+    console.log("Salt: " + salt);
     return bcrypt.hash(password, salt);
   };
-  schema.methods.validatePassword = async function (password:string) {
+  
+  schema.methods.validatePassword = async function (password:String) {
+    console.log("Validate password: " + password + ", " + this.password)
     return bcrypt.compare(password, this.password);
   };
-  */
+
 
 export default mongoose.model<IUserModel>('users', schema);

@@ -39,10 +39,22 @@ export class UserController {
                     reviews: [],
                     password: req.body.password,
                     rol: req.body.rol,
-                    //encryptPassword: undefined,
-                    //validatePassword: undefined,
+                    encryptPassword: undefined,
+                    validatePassword: undefined,
                 };
 
+
+                console.log("Contraseña antes de encriptar: " + user_params.password);
+                
+                //Encriptamos la contraseña
+                try{
+                    user_params.password = await user_params.encryptPassword(req.body.password);
+                }
+                catch(error){
+                    console.log("Error encriptando la contraseña.");
+                }
+
+                console.log("Contraseña despues de encriptar: " + user_params.password);
 
                 const user_data = await this.user_service.createUser(user_params);
 
@@ -57,27 +69,22 @@ export class UserController {
 
     public async get_user(req: Request, res: Response) {
         try{
-            
-                
-
-            
             const user_filter = { _id: req.params.id };
                 // Fetch user
                 const user_data = await this.user_service.populateUserPosts(user_filter);
+
                 var tokenRecibido = req.headers.authorization;
                 //console.log(req.headers)
-                
 
                 const tokenPart = tokenRecibido.split(' ')[1];
-
-                
                 
                 var decoded = jwt.verify(tokenPart, 'aaaa');
                 
                 if (req.params.id !== decoded.foo ) {
                     return res.status(200).json({ data: user_data.name,email:user_data.email,gender:user_data.gender, message: 'Successful'});
                 }
-                else return res.status(200).json({ data: user_data, message: 'Successful'});
+
+                return res.status(200).json({ data: user_data, message: 'Successful'});
         
         
         
@@ -86,6 +93,9 @@ export class UserController {
             return res.status(500).json({ error: 'Internal server error' });
         }
     }
+
+
+
     public async get_user_unauthorized(req: Request, res: Response) {
         try{
             if (req.params.id) {
@@ -114,6 +124,7 @@ export class UserController {
         }
     }
     public async update_user(req: Request, res: Response) {
+
         //SOLO PUEDE ACTUALIZAR UN USUARIO EL PROPIO USUARIO
         
             if (req.params.id) {
@@ -124,12 +135,6 @@ export class UserController {
                     // Send failure response if user not found
                     return res.status(400).json({ error: 'User not found' });
                 }else{
-                
-    
-                
-                    
-                    
-    
                     const user_params: IUser = {
                         _id: req.params.id,
                         name: req.body.name ? {
@@ -143,9 +148,11 @@ export class UserController {
                         token: req.body.token || user_data.token,
                         rol: req.body.rol || user_data.rol,
                         password: undefined,
-                        //encryptPassword: undefined,
-                        //validatePassword: undefined,
+                        encryptPassword: undefined,
+                        validatePassword: undefined,
                     };
+
+
                     // Update user
                     await this.user_service.updateUser(user_params);
                     //get new user data
@@ -162,7 +169,6 @@ export class UserController {
     }
     
     public async delete_user(req: Request, res: Response) {
-        //SOLO SE PUEDE ELIMINAR EL USER SI TIENES ROL DE ADMIN
         try {
             
             if (req.params.id) {

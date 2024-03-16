@@ -15,7 +15,7 @@ export class UserRoutes {
             this.user_controller.create_user(req, res);
         });
 
-        app.get('/signin', (req: Request, res: Response) => {
+        app.get('/signin/:password', (req: Request, res: Response) => {
             this.auth_controller.signin(req, res);
         });
         /*
@@ -23,8 +23,11 @@ export class UserRoutes {
             this.auth_controller.signup(req, res);
         });
         */
+        app.get('/:id', (req: Request, res: Response) => {
+            this.user_controller.get_user(req, res);
+        });
 
-        app.get('/:id',this.auth_controller.get_user, this.user_controller.get_user );
+        //app.get('/:id',this.auth_controller.get_user, this.user_controller.get_user );
 
         app.put('/:id',this.auth_controller.update_user, this.user_controller.update_user );
 

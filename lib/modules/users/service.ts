@@ -75,6 +75,7 @@ export default class UserService {
                 ...user.toObject(),
                 _id: user._id.toString()
             };
+            console.log("Password de populatedUser: "+populatedUser.password);
             return populatedUser;
         } catch (error) {
             throw error;
