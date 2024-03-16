@@ -10,7 +10,8 @@ export class UserRoutes {
 
     public route(app: Application) {
         
-        app.post('', (req: Request, res: Response) => {
+        
+        app.post('/signup', (req: Request, res: Response) => {
             this.user_controller.create_user(req, res);
         });
 
@@ -23,17 +24,11 @@ export class UserRoutes {
         });
         */
 
-        app.get('/:id', (req: Request, res: Response) => {
-            this.user_controller.get_user(req, res);
-        });
+        app.get('/:id',this.auth_controller.get_user, this.user_controller.get_user );
 
-        app.put('/:id', (req: Request, res: Response) => {
-            this.user_controller.update_user(req, res);
-        });
+        app.put('/:id',this.auth_controller.update_user, this.user_controller.update_user );
 
-        app.delete('/:id', (req: Request, res: Response) => {
-            this.user_controller.delete_user(req, res);
-        });
+        app.delete('/:id', this.auth_controller.delete_user, this.user_controller.delete_user);
 
     }
 }

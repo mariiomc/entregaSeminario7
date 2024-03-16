@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { IUser } from '../modules/users/model';
 import UserService from '../modules/users/service';
 import e = require('express');
+import User from '../modules/users/schema';  
 
 var jwt = require('jsonwebtoken');
 var token;
@@ -17,6 +18,7 @@ export class UserController {
                 req.body.email &&
                 req.body.phone_number &&
                 req.body.gender &&
+                req.body.password&&
                 req.body.rol) {
                 
                 
@@ -55,6 +57,37 @@ export class UserController {
 
     public async get_user(req: Request, res: Response) {
         try{
+            
+                
+
+            
+            const user_filter = { _id: req.params.id };
+                // Fetch user
+                const user_data = await this.user_service.populateUserPosts(user_filter);
+                var tokenRecibido = req.headers.authorization;
+                //console.log(req.headers)
+                
+
+                const tokenPart = tokenRecibido.split(' ')[1];
+
+                
+                
+                var decoded = jwt.verify(tokenPart, 'aaaa');
+                
+                if (req.params.id !== decoded.foo ) {
+                    return res.status(200).json({ data: user_data.name,email:user_data.email,gender:user_data.gender, message: 'Successful'});
+                }
+                else return res.status(200).json({ data: user_data, message: 'Successful'});
+        
+        
+        
+        }catch(error){
+            console.log(error);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+    public async get_user_unauthorized(req: Request, res: Response) {
+        try{
             if (req.params.id) {
                 const user_filter = { _id: req.params.id };
                 // Fetch user
@@ -80,10 +113,9 @@ export class UserController {
             return res.status(500).json({ error: 'Internal server error' });
         }
     }
-
     public async update_user(req: Request, res: Response) {
         //SOLO PUEDE ACTUALIZAR UN USUARIO EL PROPIO USUARIO
-        try {
+        
             if (req.params.id) {
                 const user_filter = { _id: req.params.id };
                 // Fetch user
@@ -91,18 +123,12 @@ export class UserController {
                 if (!user_data) {
                     // Send failure response if user not found
                     return res.status(400).json({ error: 'User not found' });
-                }
-                var tokenRecibido = req.headers.authorization;
-                //console.log(req.headers)
-                console.log('*' + tokenRecibido + "*")
+                }else{
+                
     
-                const tokenPart = tokenRecibido.split(' ')[1];
-    
-                console.log("TOKEN: " + tokenPart);
-    
-                try {
-                    var decoded = jwt.verify(tokenPart, 'aaaa');
-                    console.log(decoded.foo);
+                
+                    
+                    
     
                     const user_params: IUser = {
                         _id: req.params.id,
@@ -126,42 +152,19 @@ export class UserController {
                     const new_user_data = await this.user_service.filterUser(user_filter);
                     // Send success response
                     return res.status(200).json({ data: new_user_data, message: 'Successful' });
-                } catch (error) {
-                    // Catch and handle invalid token errors
-                    console.error("Invalid token:", error);
-                    return res.status(401).json({ error: 'Invalid token' });
                 }
+                
             } else {
                 // Send error response if ID parameter is missing
                 return res.status(400).json({ error: 'Missing ID parameter' });
             }
-        } catch (error) {
-            // Catch and handle any other errors
-            console.error("Error updating:", error);
-            return res.status(500).json({ error: 'Internal server error' });
-        }
+        
     }
     
     public async delete_user(req: Request, res: Response) {
         //SOLO SE PUEDE ELIMINAR EL USER SI TIENES ROL DE ADMIN
         try {
-            const token = req.headers.authorization?.split(' ')[1]; // Obtener el token de la cabecera
-    
-            if (!token) {
-                return res.status(401).json({ error: 'Unauthorized: Token missing' });
-            }
             
-            console.log("TOKEN: " + token);
-
-            // Verificar el token
-            const decodedToken = jwt.verify(token, 'aaaa');
-            const userRole = req.body.rol;
-            console.log("ROL: "+ userRole);
-
-            if (userRole !== "admin") {
-                return res.status(403).json({ error: 'Unauthorized: Only admins can delete users' });
-            }
-    
             if (req.params.id) {
                 // Delete user
                 const delete_details = await this.user_service.deleteUser(req.params.id);
