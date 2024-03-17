@@ -9,12 +9,12 @@ export interface IUser {
     };
     email: String;
     phone_number: String;
-    gender: String;
+    gender?: String;
     posts?: mongoose.Types.ObjectId[]; // Array to store post IDs
     reviews?:mongoose.Types.ObjectId[];
     password: String;
     token?: String;
-    rol: String;
+    rol?: String;
     encryptPassword(password: String): Promise<String>;
     validatePassword(password: String): Promise<boolean>;
 }

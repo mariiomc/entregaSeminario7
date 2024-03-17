@@ -12,7 +12,7 @@ export class UserRoutes {
         
         
         app.post('/signup', (req: Request, res: Response) => {
-            this.user_controller.create_user(req, res);
+            this.auth_controller.signup(req, res);
         });
 
         app.get('/signin/:password', (req: Request, res: Response) => {

@@ -12,12 +12,12 @@ const schema = new Schema({
     },
     email:{type: String, required: true},
     phone_number:{type: String, required: true},
-    gender:{type: String, required: true},
+    gender:{type: String, required: false},
     posts: [{ type: Schema.Types.ObjectId, ref: 'posts', required: false }] ,// Array of ObjectIds referencing the Post model
     reviews: [{ type: Schema.Types.ObjectId, ref: 'Review', required: false }],
     password:{type: String, required: true},
-    token: {type: String, required: true},
-    rol: {type: String, required: true},
+    token: {type: String, required: false},
+    rol: {type: String, required: false},
     }
     
 );

@@ -75,11 +75,11 @@ export class AuthController{
               const user_filter = { email: req.body.email };
               const user_data = await this.user_service.populateUserPosts(user_filter);
       
-              /*
+              
               if (!user_data.password || !user_data.email) {
                   return res.status(404).json({ error: "El email: " + user_data.email + " o la contraseña: " + user_data.password + " es undefined." });
               }
-              */
+              
 
               const user = new User({
                 name: {
@@ -240,14 +240,13 @@ export class AuthController{
 
     }
     //Ya existe un create_user, que es el signup
-    /*
+    
       public async signup(req: Request, res: Response): Promise<Response> {
-        const { name, email, phone_number, gender, password, rol } = req.body;
-        console.log(name, email, phone_number, gender, password, rol);
+        const { name: {first_name, middle_name, last_name}, email, phone_number, password } = req.body;
+        console.log(first_name, middle_name, last_name, email, phone_number, password);
       
         
-        const { name: { first_name, middle_name, last_name },email, phone_number, gender, password } = req.body;
-        console.log({ name: { first_name, middle_name, last_name },email, phone_number, gender, password });
+      
       
         const user = new User({
             name: {
@@ -257,14 +256,14 @@ export class AuthController{
             },
             email,
             phone_number,
-            gender,
             password
         });
         user.password = await user.encryptPassword(req.body.password);
         await user.save();
+        console.log(user.password);
         return res.status(200).json("Registro completado, Bienvenido:" + user.name.first_name);
     }
-    */
+    
     
     /*public async priv(req: AuthenticatedRequest, res: Response): Promise<Response> {
         try {

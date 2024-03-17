@@ -11,7 +11,7 @@ export class UserController {
 
     private user_service: UserService = new UserService();
 
-    public async create_user(req: Request, res: Response) {
+    /* public async create_user(req: Request, res: Response) {
         try{
             // this check whether all the filds were send through the request or not
             if (req.body.name && req.body.name.first_name && req.body.name.middle_name && req.body.name.last_name &&
@@ -38,9 +38,7 @@ export class UserController {
                     token: token,
                     reviews: [],
                     password: req.body.password,
-                    rol: req.body.rol,
-                    encryptPassword: undefined,
-                    validatePassword: undefined,
+                    
                 };
 
 
@@ -65,7 +63,7 @@ export class UserController {
         }catch(error){
             return res.status(500).json({ error: 'Internal server error' });
         }
-    }
+    } */
 
     public async get_user(req: Request, res: Response) {
         try{
@@ -89,6 +87,7 @@ export class UserController {
         
         
         }catch(error){
+            console.log(res,req);
             console.log(error);
             return res.status(500).json({ error: 'Internal server error' });
         }
