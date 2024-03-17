@@ -11,59 +11,7 @@ export class UserController {
 
     private user_service: UserService = new UserService();
 
-    /* public async create_user(req: Request, res: Response) {
-        try{
-            // this check whether all the filds were send through the request or not
-            if (req.body.name && req.body.name.first_name && req.body.name.middle_name && req.body.name.last_name &&
-                req.body.email &&
-                req.body.phone_number &&
-                req.body.gender &&
-                req.body.password&&
-                req.body.rol) {
-                
-                
-                token = jwt.sign({ foo: req.body.name}, 'aaaa');
-                console.log("El token es: " + token);
-
-
-                const user_params: IUser = {
-                    name: {
-                        first_name: req.body.name.first_name,
-                        middle_name: req.body.name.middle_name,
-                        last_name: req.body.name.last_name
-                    },
-                    email: req.body.email,
-                    phone_number: req.body.phone_number,
-                    gender: req.body.gender,
-                    token: token,
-                    reviews: [],
-                    password: req.body.password,
-                    
-                };
-
-
-                console.log("Contraseña antes de encriptar: " + user_params.password);
-                
-                //Encriptamos la contraseña
-                try{
-                    user_params.password = await user_params.encryptPassword(req.body.password);
-                }
-                catch(error){
-                    console.log("Error encriptando la contraseña.");
-                }
-
-                console.log("Contraseña despues de encriptar: " + user_params.password);
-
-                const user_data = await this.user_service.createUser(user_params);
-
-                return res.status(201).json({ message: 'User created successfully', user: user_data });
-            }else{            
-                return res.status(400).json({ error: 'Missing fields' });
-            }
-        }catch(error){
-            return res.status(500).json({ error: 'Internal server error' });
-        }
-    } */
+   
 
     public async get_user(req: Request, res: Response) {
         try{

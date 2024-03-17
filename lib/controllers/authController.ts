@@ -104,7 +104,8 @@ export class AuthController{
               const token = jwt.sign({ id: user_data._id}, 'aaaa', {
                   expiresIn: 60 * 60 * 24,
               });
-              console.log("TOKEN: " + token); 
+              console.log("TOKEN: " + token);
+              console.log("Id: "+ user_data._id);
               return res.status(200).json({ auth: true, token });
             
             
@@ -264,31 +265,4 @@ export class AuthController{
         return res.status(200).json("Registro completado, Bienvenido:" + user.name.first_name);
     }
     
-    
-    /*public async priv(req: AuthenticatedRequest, res: Response): Promise<Response> {
-        try {
-            const user = await User.findById(req.userId);
-            if (!user) {
-              return res.status(404).json({ error: "No se encontró el usuario" });
-            }
-            const { password, ...userWithoutPassword } = user.toObject();
-            return  res.json({ user });
-          } catch (error) {
-            console.error(error);
-            return res.status(500).json({ error: "Error interno del servidor" });
-          }
-    }
-    public async publ(req: AuthenticatedRequest, res: Response): Promise<Response> {
-        try {
-            const user = await User.findById(req.userId);
-            if (!user) {
-              return res.status(404).json({ error: "No se encontró el usuario" });
-            }
-            const { password, ...userWithoutPassword } = user.toObject();
-            return res.json({ user });
-          } catch (error) {
-            console.error(error);
-            return res.status(500).json({ error: "Error interno del servidor" });
-          }
-    } */
 }
