@@ -126,6 +126,7 @@ export class AuthController{
         if (!token) {
             return res.status(401).json({ error: 'Unauthorized: Token missing' });
         }      
+        try{
         const decodedToken = jwt.verify(token, 'aaaa');
         const user = await User.findOne({ _id: decodedToken.foo });
         const userRole = user.rol;
@@ -134,6 +135,10 @@ export class AuthController{
           return res.status(403).json({ error: 'Unauthorized: Only admins can delete users' });
         }
         else return next()
+      }
+      catch(error){
+        return res.status(403).json({ error: 'Unauthorized: Unvalid Token' });
+      }
   
         
     }
@@ -171,14 +176,21 @@ export class AuthController{
         
         if (!token) {
             return res.status(401).json({ error: 'Unauthorized: Token missing' });
-        }      
-        const decodedToken = jwt.verify(token, 'aaaa');
-      
+        }     
+        try{
+          const decodedToken = jwt.verify(token, 'aaaa');
+          return next();
+        }
+        catch(error){
+          return res.status(403).json({ error: 'Unauthorized: Unvalid Token' });
+        }
         
+        /*
         if (req.params.id !== decodedToken.foo ) {
           return res.status(403).json({ error: 'Unauthorized: Only the user can update the user' });
         }
-        else return next()      
+        else return next()
+        */      
     }
     catch (error) {
       // Catch and handle any errors
@@ -196,18 +208,20 @@ export class AuthController{
         if (!token) {
             return res.status(401).json({ error: 'Unauthorized: Token missing' });
         }      
-        const decodedToken = jwt.verify(token, 'aaaa');
-        const user = await User.findOne({ _id: decodedToken.foo });
-        const userRole = user.rol;
-        const post = await Post.findById(req.params.id);
-        const post_userId= post.author._id;
-        
+        try{
+          const decodedToken = jwt.verify(token, 'aaaa'); 
+          const user = await User.findOne({ _id: decodedToken.foo });
+          const userRole = user.rol;
+          const post = await Post.findById(req.params.id);
+          const post_userId= post.author._id;
         if (userRole !== "admin" && post_userId !== decodedToken.foo ) {
           return res.status(403).json({ error: 'Unauthorized: Only admins can delete users' });
         }
         else return next()
-  
-        
+        }
+        catch(error){
+          return res.status(403).json({ error: 'Unauthorized: Unvalid Token' });
+        }  
     }
     catch (error) {
       // Catch and handle any errors
@@ -224,15 +238,20 @@ export class AuthController{
         if (!token) {
             return res.status(401).json({ error: 'Unauthorized: Token missing' });
         }      
+        try{
         const decodedToken = jwt.verify(token, 'aaaa');
+        return next();
+        }
+        catch(error){
+          return res.status(403).json({ error: 'Unauthorized: Unvalid Token' });
+        }
       
-        
+        /*
         if (req.body.author !== decodedToken.foo ) {
           return res.status(403).json({ error: 'Unauthorized: Only the user can update the user' });
         }
         else return next()
-  
-        
+        */
     }
     catch (error) {
       // Catch and handle any errors
