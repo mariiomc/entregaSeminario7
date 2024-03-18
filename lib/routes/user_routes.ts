@@ -24,14 +24,23 @@ export class UserRoutes {
         });
         */
         app.get('/:id', (req: Request, res: Response) => {
+            this.auth_controller.get_user;
             this.user_controller.get_user(req, res);
         });
 
         //app.get('/:id',this.auth_controller.get_user, this.user_controller.get_user );
 
-        app.put('/:id',this.auth_controller.update_user, this.user_controller.update_user );
+        //app.put('/:id',this.auth_controller.update_user, this.user_controller.update_user );
+        app.put('/:id', (req: Request, res: Response) => {
+            this.auth_controller.update_user;
+            this.user_controller.update_user(req, res);
+        });
 
-        app.delete('/:id', this.auth_controller.delete_user, this.user_controller.delete_user);
+        //app.delete('/:id', this.auth_controller.delete_user, this.user_controller.delete_user);
 
+        app.delete('/:id', (req: Request, res: Response) => {
+            this.auth_controller.delete_user;
+            this.user_controller.delete_user(req, res);
+        });
     }
 }

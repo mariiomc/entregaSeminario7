@@ -67,6 +67,7 @@ export default class UserService {
         try {
             // Find the user document and populate the 'posts' field
             const user = await users.findOne(query).populate('posts').exec();
+            
             if (!user) {
                 return null;
             }
