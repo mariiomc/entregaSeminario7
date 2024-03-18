@@ -24,7 +24,6 @@ const schema = new Schema({
 
 schema.methods.encryptPassword = async (password:String) => {
     const salt = await bcrypt.genSalt(10);
-    console.log("Salt: " + salt);
     return bcrypt.hash(password, salt);
   };
   
