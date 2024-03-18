@@ -12,7 +12,6 @@ export class UserController {
     private user_service: UserService = new UserService();
 
    
-
     public async get_user(req: Request, res: Response) {
         try{
             const user_filter = { _id: req.params.id };
@@ -32,8 +31,6 @@ export class UserController {
 
                 return res.status(200).json({ data: user_data, message: 'Successful'});
         
-        
-        
         }catch(error){
             console.log(res,req);
             console.log(error);
@@ -41,38 +38,8 @@ export class UserController {
         }
     }
 
-
-
-    public async get_user_unauthorized(req: Request, res: Response) {
-        try{
-            if (req.params.id) {
-                const user_filter = { _id: req.params.id };
-                // Fetch user
-                const user_data = await this.user_service.populateUserPosts(user_filter);
-                var tokenRecibido = req.headers.authorization;
-                //console.log(req.headers)
-                console.log('*'+tokenRecibido+"*")
-
-                const tokenPart = tokenRecibido.split(' ')[1];
-
-                console.log("TOKEN: " + tokenPart);
-                
-                var decoded = jwt.verify(tokenPart, 'aaaa');
-                console.log(decoded.foo);
-
-                return res.status(200).json({ data: user_data, message: 'Successful'});
-
-            } else {
-                return res.status(400).json({ error: 'Missing fields' });
-            }
-        }catch(error){
-            console.log(error);
-            return res.status(500).json({ error: 'Internal server error' });
-        }
-    }
     public async update_user(req: Request, res: Response) {
 
-        //SOLO PUEDE ACTUALIZAR UN USUARIO EL PROPIO USUARIO
         
             if (req.params.id) {
                 const user_filter = { _id: req.params.id };

@@ -15,60 +15,7 @@ export class AuthController{
 
   private user_service: UserService = new UserService();
 
-/*
-     public async signin(req: Request, res: Response): Promise<Response> {
-        /*const { email, password } = req.body;
-        const user = await User.findOne({ email: email });
-        if (!user || !password) {
-          return res.status(404).send("El email o la contraseña no existe.");
-        }
-        
 
-        //else{
-          try{
-              const user_filter = { email: req.body.email };
-              // Fetch user
-              const user_data = await this.user_service.populateUserPosts(user_filter);
-              console.log("User data: " + user_data);
-
-              if(!user_data){
-                return res.status(404).send({error: "El email o la contraseña no existe."});
-              }
-              else{
-
-                const validPassword = await user_data.validatePassword(user_data.password);
-                if (!validPassword) {
-                  return res.status(401).json({ auth: false, token: null });
-                }
-                else{
-                  const token = jwt.sign({ id: user_data._id}, 'aaaa', {
-                    expiresIn: 60 * 60 * 24,             
-                  });
-                  console.log("TOKEN: " + token); 
-                  return res.status(200).json({ auth: true, token });
-                }
-              }
-            }
-            catch(error){
-              console.log(error);
-              return res.status(500).json({ error: 'Internal server error' });
-          }
-
-          */
-              /*
-              if(user.password == password){
-                  const token = jwt.sign({ id: user._id}, 'aaaa', {
-                  expiresIn: 60 * 60 * 24,                  
-                });
-                */                   
-           // }
-        //}
-        /*const validPassword = await user.validatePassword(password);
-        if (!validPassword) {
-          return res.status(401).json({ auth: false, token: null });
-        }
-        */
-       
       public async signin(req: Request, res: Response){
           try {
               
@@ -116,39 +63,6 @@ export class AuthController{
           }
       }
       
-      
-      
-    public async delete_user(req: Request, res: Response, next: NextFunction){
-      try{
-        const token = req.headers.authorization.split(' ')[1]; // Obtener el token de la cabecera
-        console.log(token);
-        if (!token) {
-            return res.status(401).json({ error: 'Unauthorized: Token missing' });
-        }      
-        try{
-        const decodedToken = jwt.verify(token, 'aaaa');
-        const user = await User.findOne({ _id: decodedToken.foo });
-        const userRole = user.rol;
-        
-        if (userRole !== "admin") {
-          return res.status(403).json({ error: 'Unauthorized: Only admins can delete users' });
-        }
-        else return next()
-      }
-      catch(error){
-        return res.status(403).json({ error: 'Unauthorized: Unvalid Token' });
-      }
-  
-        
-    }
-    catch (error) {
-      // Catch and handle any errors
-      return res.status(500).json({ error: 'Internal server error' });
-    }
-      
-
-
-    }
     public async get_user(req: Request, res: Response, next: NextFunction){
       try{
         
@@ -165,40 +79,6 @@ export class AuthController{
       return res.status(500).json({ error: 'Internal server error' });
     }
   }
-
-
-
-
-    public async update_user(req: Request, res: Response, next: NextFunction){
-      try{
-        const token = req.headers.authorization.split(' ')[1]; // Obtener el token de la cabecera
-        
-        if (!token) {
-            return res.status(401).json({ error: 'Unauthorized: Token missing' });
-        }     
-        try{
-          const decodedToken = jwt.verify(token, 'aaaa');
-          return next();
-        }
-        catch(error){
-          return res.status(403).json({ error: 'Unauthorized: Unvalid Token' });
-        }
-        
-        /*
-        if (req.params.id !== decodedToken.foo ) {
-          return res.status(403).json({ error: 'Unauthorized: Only the user can update the user' });
-        }
-        else return next()
-        */      
-    }
-    catch (error) {
-      // Catch and handle any errors
-      return res.status(500).json({ error: 'Internal server error' });
-    }
-  }
-
-
-
 
     public async delete_post(req: Request, res: Response, next: NextFunction){
       try{
@@ -244,13 +124,7 @@ export class AuthController{
         catch(error){
           return res.status(403).json({ error: 'Unauthorized: Unvalid Token' });
         }
-      
-        /*
-        if (req.body.author !== decodedToken.foo ) {
-          return res.status(403).json({ error: 'Unauthorized: Only the user can update the user' });
-        }
-        else return next()
-        */
+    
     }
     catch (error) {
       // Catch and handle any errors
@@ -260,14 +134,10 @@ export class AuthController{
 
 
     }
-    //Ya existe un create_user, que es el signup
     
       public async signup(req: Request, res: Response): Promise<Response> {
         const { name: {first_name, middle_name, last_name}, email, phone_number, password } = req.body;
         console.log(first_name, middle_name, last_name, email, phone_number, password);
-      
-        
-      
       
         const user = new User({
             name: {

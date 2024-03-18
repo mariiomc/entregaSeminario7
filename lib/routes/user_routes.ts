@@ -25,12 +25,10 @@ export class UserRoutes {
         });
 
         app.put('/:id', (req: Request, res: Response) => {
-            this.auth_controller.update_user;
             this.user_controller.update_user(req, res);
         });
 
         app.delete('/:id', (req: Request, res: Response) => {
-            this.auth_controller.delete_user;
             this.user_controller.delete_user(req, res);
         });
     }
