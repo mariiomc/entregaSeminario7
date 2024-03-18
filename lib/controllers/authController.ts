@@ -69,16 +69,18 @@ export class AuthController{
         }
         */
        
-      public async signin(req: Request, res: Response): Promise<Response> {
+      public async signin(req: Request, res: Response){
           try {
               
               const user_filter = { email: req.body.email };
               const user_data = await this.user_service.populateUserPosts(user_filter);
       
-              
+              console.log(user_data.name.first_name, user_data.name.middle_name, user_data.name.last_name, user_data.email, user_data.phone_number, user_data.password )
+
               if (!user_data.password || !user_data.email) {
                   return res.status(404).json({ error: "El email: " + user_data.email + " o la contraseña: " + user_data.password + " es undefined." });
               }
+
               
 
               const user = new User({

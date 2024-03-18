@@ -71,9 +71,8 @@ export class UserController {
         }
     }
     public async update_user(req: Request, res: Response) {
-
         //SOLO PUEDE ACTUALIZAR UN USUARIO EL PROPIO USUARIO
-        
+        try {
             if (req.params.id) {
                 const user_filter = { _id: req.params.id };
                 // Fetch user
@@ -81,7 +80,19 @@ export class UserController {
                 if (!user_data) {
                     // Send failure response if user not found
                     return res.status(400).json({ error: 'User not found' });
-                }else{
+                }
+                var tokenRecibido = req.headers.authorization;
+                //console.log(req.headers)
+                console.log('*' + tokenRecibido + "*")
+    
+                const tokenPart = tokenRecibido.split(' ')[1];
+    
+                console.log("TOKEN: " + tokenPart);
+    
+                try {
+                    var decoded = jwt.verify(tokenPart, 'aaaa');
+                    console.log(decoded.foo);
+    
                     const user_params: IUser = {
                         _id: req.params.id,
                         name: req.body.name ? {
@@ -98,22 +109,28 @@ export class UserController {
                         encryptPassword: undefined,
                         validatePassword: undefined,
                     };
-
-
                     // Update user
                     await this.user_service.updateUser(user_params);
                     //get new user data
                     const new_user_data = await this.user_service.filterUser(user_filter);
                     // Send success response
                     return res.status(200).json({ data: new_user_data, message: 'Successful' });
+                } catch (error) {
+                    // Catch and handle invalid token errors
+                    console.error("Invalid token:", error);
+                    return res.status(401).json({ error: 'Invalid token' });
                 }
-                
             } else {
                 // Send error response if ID parameter is missing
                 return res.status(400).json({ error: 'Missing ID parameter' });
             }
-        
+        } catch (error) {
+            // Catch and handle any other errors
+            console.error("Error updating:", error);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
     }
+    
     
     public async delete_user(req: Request, res: Response) {
         try {

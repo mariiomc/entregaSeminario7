@@ -1,5 +1,6 @@
 import { Application, Request, Response } from 'express';
-import {AuthController} from '../controllers/authController',
+import {AuthController} from '../controllers/authController';
+import User from '../modules/users/schema';
 
 
 export class AuthRoutes{
@@ -19,6 +20,7 @@ private auth_controller: AuthController= new AuthController;
             if (!user) {
               return res.status(404).send("The email doesn t exists");
             }
+        });
         
     }
 

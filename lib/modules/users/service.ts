@@ -70,6 +70,7 @@ export default class UserService {
             if (!user) {
                 return null;
             }
+            console.log("Password 1 populated: " + user.password);
             // Convert _id to string
             const populatedUser: IUser = {
                 ...user.toObject(),
