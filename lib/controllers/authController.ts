@@ -264,7 +264,7 @@ export class AuthController{
         user.password = await user.encryptPassword(req.body.password);
         await user.save();
         console.log(user.password);
-        return res.status(200).json("Registro completado, Bienvenido:" + user.name.first_name);
+        return res.status(200).json("Registro completado, Bienvenido:" + user.name.first_name); 
     }
     
 }
