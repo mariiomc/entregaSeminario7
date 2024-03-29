@@ -27,9 +27,13 @@ schema.methods.encryptPassword = async (password:String) => {
     return bcrypt.hash(password, salt);
   };
   
-  schema.methods.validatePassword = async function (password:String) {
-    console.log("Validate password: " + password + ", " + this.password)
-    return bcrypt.compare(password, this.password);
+  schema.methods.validatePassword = async function (password1:String) {
+    console.log("Validate password: " + password1 + ", " + this.password);
+    const salt = await bcrypt.genSalt(10);
+    console.log("SALT: "+salt);
+    const passwordEncrypted = await bcrypt.hash(this.password, salt);
+    console.log("Password: "+ passwordEncrypted);
+    return bcrypt.compare(password1, passwordEncrypted);
   };
 
 

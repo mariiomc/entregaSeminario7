@@ -6,6 +6,8 @@ import User from '../modules/users/schema';
 import UserService from '../modules/users/service';
 import Post from '../modules/posts/schema';        
 import PostService from '../modules/posts/service';
+import IJwtPayload from '../modules/JWTPayload';
+
 
 //import { body, validationResult } from 'express-validator';
 
@@ -15,15 +17,38 @@ export class AuthController{
 
   private user_service: UserService = new UserService();
 
+  
 
       public async signin(req: Request, res: Response){
           try {
-              
+              const _SECRET: string = 'PalabraSecreta';
+
               const user_filter = { email: req.body.email, password: req.body.password };
+              const user_filter2 = {email: req.body.email}
               //console.log("req.body.password: " + req.body.password);
-              const user_data = await this.user_service.populateUserPosts(user_filter);
+              //const user_data = await this.user_service.populateUserPosts(user_filter);
+              console.log("user_filter: " + req.body.email + ", " + req.body.password);
+              const user_data = await this.user_service.filterUser(user_filter2);
             
-              console.log(user_data.name.first_name, user_data.name.middle_name, user_data.name.last_name, user_data.email, user_data.phone_number, user_data.password )
+              if(!user_data.name){
+                console.log("Error recogiendo nombre")
+              }
+              if(!user_data.email){
+                console.log("Error recogiendo email")
+              }
+              if(!user_data.phone_number){
+                console.log("Error recogiendo phone number")
+              }
+              if(!user_data.gender){
+                console.log("Error recogiendo gender")
+              }
+              if(!user_data.password){
+                console.log("Error recogiendo password")
+              }
+              if(!user_data.rol){
+                console.log("Error recogiendo rol")
+              }
+              console.log(user_data.name.first_name,user_data.name.middle_name, user_data.name.last_name, user_data.email, user_data.phone_number, user_data.gender, user_data.password, user_data.rol )
 
               if (!user_data.password || !user_data.email) {
                   return res.status(404).json({ error: "El email: " + user_data.email + " o la contraseña: " + user_data.password + " es undefined." });
@@ -44,12 +69,17 @@ export class AuthController{
 
 
               console.log("Contraseña: " + user_data.password);
+
+              
               const validPassword = await user.validatePassword(user_data.password);
               if (!validPassword) {
                   return res.status(401).json({error:"No valid password" });
               }
+              
+              const session = { 'id': user_data._id, 'rol': user_data.rol } as unknown as IJwtPayload;
+              console.log("SESSION: "+ session);
       
-              const token = jwt.sign({ id: user_data._id}, 'aaaa', {
+              const token = jwt.sign({ session}, _SECRET, {
                   expiresIn: 60 * 60 * 24,
               });
               console.log("TOKEN: " + token);
@@ -58,7 +88,7 @@ export class AuthController{
             
             
           } catch (error) {
-              console.log(error);
+              console.log("Este es el error:    " + error);
               return res.status(500).json({ error: 'Internal server error' });
           }
       }
@@ -136,7 +166,7 @@ export class AuthController{
     }
     
       public async signup(req: Request, res: Response): Promise<Response> {
-        const { name: {first_name, middle_name, last_name}, email, phone_number, password } = req.body;
+        const { name: {first_name, middle_name, last_name}, email, phone_number, password, gender, rol } = req.body;
         console.log(first_name, middle_name, last_name, email, phone_number, password);
       
         const user = new User({
@@ -145,10 +175,13 @@ export class AuthController{
                 middle_name,
                 last_name
             },
+            gender,
             email,
             phone_number,
-            password
+            password,
+            rol
         });
+        
         user.password = await user.encryptPassword(req.body.password);
         await user.save();
         console.log(user.password);

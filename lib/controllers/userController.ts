@@ -25,8 +25,10 @@ export class UserController {
                 
                 var decoded = jwt.verify(tokenPart, 'aaaa');
                 
+                console.log("Password get user: " + user_data.password);
+
                 if (req.params.id !== decoded.foo ) {
-                    return res.status(200).json({ data: user_data.name,email:user_data.email,gender:user_data.gender, message: 'Successful'});
+                    return res.status(200).json({ data: user_data.name,email:user_data.email,gender:user_data.gender,password:user_data.password, message: 'Successful'});
                 }
 
                 return res.status(200).json({ data: user_data, message: 'Successful'});
@@ -50,7 +52,6 @@ export class UserController {
                     return res.status(400).json({ error: 'User not found' });
                 }else{
                     const user_params: IUser = {
-                        _id: req.params.id,
                         name: req.body.name ? {
                             first_name: req.body.name.first_name || user_data.name?.first_name,
                             middle_name: req.body.name.middle_name || user_data.name?.middle_name,

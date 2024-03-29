@@ -37,7 +37,7 @@ export class PostController {
                 // Fetch user
                 const post_data = await this.post_service.filterPost(post_filter);
                 // Send success response
-                return res.status(200).json({ data: post_data, message: 'Successful'});
+                return res.status(200).json({ message: 'Successful'});
             } else {
                 return res.status(400).json({ error: 'Missing fields' });
             }
@@ -48,23 +48,31 @@ export class PostController {
 
     public async deletePost(req: Request, res: Response) {
         try {
-            if (req.params.id) {
-                // Delete post
-                const delete_details = await this.post_service.deletePost(req.params.id);
-                if (delete_details.deletedCount !== 0) {
-                    // Send success response if user deleted
-                    return res.status(200).json({ message: 'Successful'});
-                } else {
-                    // Send failure response if user not found
-                    return res.status(400).json({ error: 'Post not found' });
-                }
-            } else {
-                // Send error response if ID parameter is missing
+            const postId = req.params.id;
+    /*
+            if (!postId) {
                 return res.status(400).json({ error: 'Missing Id' });
             }
+            */
+    
+            const delete_details = await this.post_service.deletePost(postId);
+
+            console.log("HE SALIDO DE DELETE POST")
+    
+            if (delete_details.deletedCount !== 0) {
+                console.log("Respuesta successful")
+                // Si se eliminó correctamente, enviar una respuesta de éxito
+                return res.status(200).json({ message: 'Successful' });
+            } else {
+                console.log("no se ha encontrado el post")
+                // Si no se encontró el post, enviar una respuesta de error
+                return res.status(400).json({ error: 'Post not found' });
+            }
         } catch (error) {
-            // Catch and handle any errors
+            // Si ocurre un error, enviar una respuesta de error interno del servidor
+            console.error("Error occurred during post deletion:", error);
             return res.status(500).json({ error: 'Internal server error' });
         }
     }
+    
 }

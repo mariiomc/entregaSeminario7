@@ -22,6 +22,7 @@ export default class PostService {
 
     public async deletePost(_id: string): Promise<{ deletedCount: number }> {
         try {
+            console.log("ESTOY EN DELETEPOST")
             const query = { _id: _id };
             return await posts.deleteOne(query);
         } catch (error) {

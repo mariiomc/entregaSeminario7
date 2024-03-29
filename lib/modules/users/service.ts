@@ -5,22 +5,9 @@ const bcrypt = require("bcryptjs");
 
 export default class UserService {
 
-    
-    
-    public async createUser(user_params: IUser): Promise<IUser> {
-        try {
-            const session = new users(user_params);
-            const result = await session.save();
-            // Convert _id to string
-            const newUser: IUser = { ...result.toObject(), _id: result._id.toString() };
-            return newUser;
-        } catch (error) {
-            throw error;
-        }
-    }
-
     public async filterUser(query: any): Promise<IUser | null> {
         try {
+            console.log("inicio de filterUser.")
             return await users.findOne(query);
         } catch (error) {
             throw error;
@@ -75,8 +62,8 @@ export default class UserService {
             console.log("Password 1 populated: " + user.password);
             // Convert _id to string
             const populatedUser: IUser = {
-                ...user.toObject(),
-                _id: user._id.toString()
+                ...user.toObject()
+                //_id: user._id.toString()
             };
             console.log("Password de populatedUser: "+populatedUser.password);
             return populatedUser;
